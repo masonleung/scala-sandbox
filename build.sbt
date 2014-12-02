@@ -32,7 +32,6 @@ publishTo <<= version { (v: String) =>
 lazy val root = (project in file(".")).
     settings(
         name := "hello",
-        version := "1.0",
         scalaVersion := "2.11.4",
         libraryDependencies += "org.apache.derby" % "derby" % "10.4.1.3"
     )
