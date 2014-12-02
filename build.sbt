@@ -1,9 +1,8 @@
 import sbt._
 import Process._
 import Keys._
-import com.typesafe.sbt.SbtGit._
-
-versionWithGit
+import sbtrelease._
+import ReleaseStateTransformations._
 
 releaseSettings
 

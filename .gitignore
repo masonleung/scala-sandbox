@@ -1,2 +1,6 @@
 target/
 *.class
+sbt-launch.jar
+.history
+project/project
+project/cache
