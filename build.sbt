@@ -5,7 +5,30 @@ import com.typesafe.sbt.SbtGit._
 
 versionWithGit
 
-git.baseVersion := "0.1"
+releaseSettings
+
+ReleaseKeys.releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,              // : ReleaseStep
+  inquireVersions,                        // : ReleaseStep
+  runTest,                                // : ReleaseStep
+  setReleaseVersion,                      // : ReleaseStep
+  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
+  tagRelease,                             // : ReleaseStep
+  publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+  setNextVersion,                         // : ReleaseStep
+  commitNextVersion,                      // : ReleaseStep
+  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+)
+
+credentials += Credentials(sys.env("MAVEN_REALM"),sys.env("MAVEN_HOST"),sys.env("MAVEN_USER"),sys.env("MAVEN_PASSWORD"))
+
+publishTo <<= version { (v: String) =>
+  val artifactory = "http://sharethrough.artifactoryonline.com/sharethrough/"
+  if (v.trim.endsWith("SNAPSHOT"))
+    Some(Resolver.url("libs-snapshots-local", new URL(artifactory + "libs-snapshots-local/")))
+  else
+    Some(Resolver.url("libs-releases-local", new URL(artifactory + "libs-releases-local/")))
+}
 
 lazy val root = (project in file(".")).
     settings(
@@ -18,7 +41,6 @@ lazy val root = (project in file(".")).
 val sampleStringTask = taskKey[String]("A sample string task")
 val sampleIntTask = taskKey[Int]("A sample in task")
 val sampleMinusTask = taskKey[Int]("Blah test")
-
 
 sampleStringTask := System.getProperty("user.home")
 
